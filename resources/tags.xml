@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<tags>
+	<tag name="cfloop">
+		<attributes>
+			<attribute name="index" />
+			<attribute name="item" />
+		</attributes>
+	</tag>
+	<tag name="cfquery">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfinvoke">
+		<attributes>
+			<attribute name="returnvariable" />
+		</attributes>
+	</tag>
+	<tag name="cfdirectory">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cffile">
+		<attributes>
+			<attribute name="variable" />
+		</attributes>
+	</tag>
+	<tag name="cfparam">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfsavecontent">
+		<attributes>
+			<attribute name="variable" />
+		</attributes>
+	</tag>
+	<tag name="cfform">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfstoredproc">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfprocparam">
+		<attributes>
+			<attribute name="variable" />
+		</attributes>
+	</tag>
+	<tag name="cfhttp">
+		<attributes>
+			<attribute name="result" />
+		</attributes>
+	</tag>
+	<tag name="cfquery">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfimage">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfmail">
+		<attributes>
+			<attribute name="query" />
+		</attributes>
+	</tag>
+	<tag name="cffeed">
+		<attributes>
+			<attribute name="name" />
+			<attribute name="query" attr="action" value="read" />
+		</attributes>
+	</tag>
+	<tag name="cfftp">
+		<attributes>
+			<attribute name="name" />
+			<attribute name="result" />
+		</attributes>
+	</tag>
+	<tag name="cfwddx">
+		<attributes>
+			<attribute name="output" />
+		</attributes>
+	</tag>
+	<tag name="cfobject">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfsearch">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfprocresult">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfpop">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfregistry">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfreport">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfdbinfo">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfdocument">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfexecute">
+		<attributes>
+			<attribute name="variable" />
+		</attributes>
+	</tag>
+	<tag name="cfNtAuthenticate">
+		<attributes>
+			<attribute name="result" />
+		</attributes>
+	</tag>
+	<tag name="cfcollection">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfpdf">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfxml">
+		<attributes>
+			<attribute name="variable" />
+		</attributes>
+	</tag>
+	<tag name="cfzip">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+	<tag name="cfldap">
+		<attributes>
+			<attribute name="name" />
+		</attributes>
+	</tag>
+</tags>
