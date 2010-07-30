@@ -1,0 +1,13 @@
+This is my first eclipse plugin, and I'm pretty sure not everything is perfrect. There
+are probably files in here that don't need to be, but I didn't want to miss anything. With
+that said here is what this is supposed to be:
+
+CFWarning
+
+My goal with this plugin is to make a simple eclipse view that will report errors in CFML code. For
+starters will warn the user when they are editing a CFC if they have not scoped a variable. Right now
+it only does tag-based components, but it will eventually do script as well.
+
+Future items that I am thinking about inlcude query param warnings, unused local vars, etc.
+
+I'll probably add more here to tell people how to get the project setup.
