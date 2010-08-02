@@ -73,7 +73,6 @@ public class Tokens {
 	}
 	
 	private Boolean isTokenSeparatorIncluded(Character c) {
-		String ahead = lookAhead(1);
 		return c == '"' && lookAhead(1).compareToIgnoreCase("\"") != 0;
 	}
 	
