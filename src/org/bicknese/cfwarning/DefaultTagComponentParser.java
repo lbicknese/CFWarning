@@ -149,7 +149,10 @@ public class DefaultTagComponentParser extends AbstractParser {
 							}
 							
 						}
-					}			
+					} else if (compare(currentToken,"cfdump") == 0 || compare(currentToken,"cfabort") == 0) {
+						Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The tag "+currentToken+" has been found in the code.","Debug");
+						currentFunction.addWarning(currentWarning);
+					}
 				}
 			}
 		}
