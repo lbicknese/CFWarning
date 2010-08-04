@@ -49,6 +49,8 @@ public class CFWarningModelFactory {
 		
 		AdaptableList list = new AdaptableList();
 		
+		list.add(new GeneralInfo(topLevel));
+		
 		for (int i=0;i<topLevel.length;i++) {
 			addWarnings(list,topLevel[i]);
 		}
