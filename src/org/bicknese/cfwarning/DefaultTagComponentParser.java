@@ -197,37 +197,59 @@ public class DefaultTagComponentParser extends AbstractParser {
 	
 	private Hashtable<String,String> parseAttributes(Tokens tokens) {
 		
-		String currentToken = tokens.getCurrentToken();
 		Hashtable<String,String> attributes = new Hashtable<String,String>();
 
-		currentToken = tokens.getNextToken();
+		String currentToken = tokens.getNextToken();
+		String attribute = currentToken;
+		String value = "";
+		String equalToken = "";
 		
 		while(!EOF(currentToken) && compare(currentToken,">") != 0) {
 			
 			if(!EOF(currentToken)) {
 				// eat the equals sign
 				currentToken = tokens.getNextToken();
+				equalToken = currentToken;
 			}
 			
-			if(!EOF(currentToken)) {
+			if(!EOF(currentToken) && compare(equalToken,"=") == 0) {
 				// get the value of the attribute
-				currentToken = tokens.getNextToken();
+				value = getAttributeValue(tokens);
+				currentToken = tokens.getCurrentToken();
 			}
 			
-			// TODO: need to fix the issue with spaces inside the string.
-			
-			if(!EOF(currentToken) && compare(tokens.getPreviousToken(),"=") == 0) {
+			if(!EOF(currentToken) && compare(equalToken,"=") == 0) {
 				// the value two tokens ago is the name of the attribute
 				// the current token is the value of the attribute
-				attributes.put(tokens.getToken(2).toLowerCase(), removeQuotes(currentToken));
+				attributes.put(attribute.toLowerCase(), removeQuotes(value));
 			}
 
 			currentToken = tokens.getNextToken();
+			attribute = currentToken;
 			
 		}
 		
 		return attributes;
 		
+	}
+
+	private String getAttributeValue(Tokens tokens) {
+		// this function is designed to get the value of an attribute.
+		// it takes care of instances where there might be spaces in the value.
+		String currentToken = tokens.getNextToken();
+		String value = currentToken;
+		Character c = currentToken.charAt(0);
+		
+		if(!EOF(currentToken) && (c == '\'' || c == '\"')) {
+			
+			while(!EOF(currentToken) && value.charAt(value.length()-1) != c) {
+				currentToken = tokens.getNextToken();
+				value += currentToken;
+			}
+			
+		}
+		
+		return value;
 	}
 
 	private Boolean isFunctionBeginTag(String token, String previousToken) {
