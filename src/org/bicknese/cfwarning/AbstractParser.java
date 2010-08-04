@@ -26,6 +26,9 @@ public abstract class AbstractParser {
 		scopes.add("server");
 		scopes.add("session");
 		scopes.add("local");
+		scopes.add("attributes");
+		scopes.add("thread");
+		scopes.add("beans"); //this may not be the best thing...
 		
 		this.functions = functions;
 	}

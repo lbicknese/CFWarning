@@ -14,7 +14,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Set;
@@ -42,7 +41,6 @@ public class TagLibrary extends AbstractUIPlugin {
 	private Document getTagXML() {
 		
 		try {
-			// TODO: move the tags xml outside of the src
 			InputStream inputStream = FileLocator.openStream(Activator.getDefault().getBundle(), new Path("resources/tags.xml"), false);
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();

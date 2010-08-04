@@ -46,113 +46,48 @@ public class DefaultTagComponentParser extends AbstractParser {
 		
 		String currentToken = parseFunctionAttributes(tokens,tokens.getCurrentLineNumber());
 		
-		if(!EOF(currentToken)) {
+		while(!EOF(currentToken) && !(compare(currentToken,"cffunction") == 0 && compare(tokens.getPreviousToken(),"/") == 0)) {
+		
+			currentToken = tokens.getNextToken();
 			
-			while(!EOF(currentToken) && !(compare(currentToken,"cffunction") == 0 && compare(tokens.getPreviousToken(),"/") == 0)) {
-			
-				currentToken = tokens.getNextToken();
+			if(!EOF(currentToken) && inComment(tokens)) {
 				
-				if(!EOF(currentToken) && inComment(tokens)) {
+				if(isComment(tokens)) commentCount++;
+				
+				if(isEndComment(tokens)) commentCount--;
+				
+			} else if(!EOF(currentToken) && compare(currentToken,"<") == 0 && compare(tokens.lookAhead(1),"/") != 0) {
+				
+				currentToken = tokens.getNextToken();
+				Function currentFunction = functions.lastElement();
+				
+				if(compare(currentToken,"cfset") == 0) {
 					
-					if(isComment(tokens)) commentCount++;
+					currentToken = parseCfsetTag(tokens);
 					
-					if(isEndComment(tokens)) commentCount--;
+				} else if (compare(currentToken,"cfscript") == 0) {
 					
-				} else if(!EOF(currentToken) && compare(currentToken,"<") == 0 && compare(tokens.lookAhead(1),"/") != 0) {
+					currentToken = parseCfscriptTag(tokens);
 					
-					currentToken = tokens.getNextToken();
-					Function currentFunction = functions.lastElement();
+				} else if (tags.isReturnTag(currentToken)) {
 					
-					if(compare(currentToken,"cfset") == 0) {
+					String tagName = currentToken;
+					
+					Hashtable <String,String> attributes = parseAttributes(tokens);
+					String name = tags.returnValue(tagName, attributes);
+					
+					if(compare(getScope(name),"local") != 0 && name.compareTo("") != 0) {
 						
-						currentToken = tokens.getNextToken();
-						
-						if(compare(currentToken,"var") == 0) {
-							
-							currentToken = removeQuotes(tokens.getNextToken());
-							functions.lastElement().addLocalVar(currentToken, tokens.getCurrentLineNumber());
-							
-						} else {
-							
-							// TODO: check if the variable is scoped.
-							String previousToken = removeQuotes(tokens.getCurrentToken());
-							currentToken = tokens.getNextToken();
-							
-							if(compare(currentToken,"=") == 0) {
-								
-								if(isScoped(previousToken)) {
-									// only add to local vars if it is locally scoped
-									if(compare(getScope(previousToken),"local") == 0) {
-										functions.lastElement().addLocalVar(previousToken, tokens.getCurrentLineNumber());
-									} 
-								} else {
-									if(!isLocalScoped(previousToken)) {
-										Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+previousToken+" is not scoped.","Scope");
-										currentFunction.addWarning(currentWarning);
-									}
-								}
-								
-							}
+						if(!isLocalScoped(name)) {
+							Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+name+" is not scoped.","Scope");
+							currentFunction.addWarning(currentWarning);
 						}
 						
-					} else if (compare(currentToken,"cfscript") == 0) {
-						
-						int parenCount = 0;
-						currentToken = tokens.getNextToken();
-						
-						while(!EOF(currentToken) && compare(currentToken,">") != 0) {
-							currentToken = tokens.getNextToken();
-						}
-						
-						currentToken = tokens.getNextToken();
-						
-						while(!EOF(currentToken) && !(compare(currentToken,"cfscript") == 0 && compare(tokens.getPreviousToken(),"/") == 0)) {
-						
-							if(compare(currentToken,"(") == 0)
-								parenCount++;
-								
-							if(compare(currentToken,")") == 0)
-								parenCount--;
-							
-							if(compare(currentToken,"=") == 0 && parenCount == 0) {
-								
-								String var = tokens.getToken(2);
-								String variable = tokens.getPreviousToken();
-								
-								if(compare(var,"var") == 0) {
-									functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
-								} else if (isScoped(variable) && compare(getScope(variable),"local") == 0) {
-									functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
-								} else if (!isScoped(variable) && !isLocalScoped(variable)) {
-									Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+variable+" is not scoped.","Scope");
-									currentFunction.addWarning(currentWarning);
-								}
-								
-							}
-							
-							currentToken = tokens.getNextToken();
-						
-						}
-						
-					} else if (tags.isReturnTag(currentToken)) {
-						// TODO: I think there is some more work here for tags like cfinvoke
-						String tagName = currentToken;
-						
-						Hashtable <String,String> attributes = parseAttributes(tokens);
-						String name = tags.returnValue(tagName, attributes);
-						
-						if(compare(getScope(name),"local") != 0 && name.compareTo("") != 0) {
-							
-							if(!isLocalScoped(name)) {
-								Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+name+" is not scoped.","Scope");
-								currentFunction.addWarning(currentWarning);
-							}
-							
-						}
-					} else if (compare(currentToken,"cfdump") == 0 || compare(currentToken,"cfabort") == 0) {
-						Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The tag "+currentToken+" has been found in the code.","Debug");
-						currentFunction.addWarning(currentWarning);
 					}
+					
+				} else if (compare(currentToken,"cfdump") == 0 || compare(currentToken,"cfabort") == 0) {
+					Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The tag "+currentToken+" has been found in the code.","Debug");
+					currentFunction.addWarning(currentWarning);
 				}
 			}
 		}
@@ -160,22 +95,98 @@ public class DefaultTagComponentParser extends AbstractParser {
 		return currentToken;
 	}
 	
-	private boolean inComment(Tokens tokens) {
-		return commentCount > 0 || isComment(tokens);
+	private String parseCfsetTag(Tokens tokens) {
+		
+		String currentToken = tokens.getNextToken();
+		Function currentFunction = functions.lastElement();
+		
+		if(compare(currentToken,"var") == 0) {
+			
+			currentToken = removeQuotes(tokens.getNextToken());
+			functions.lastElement().addLocalVar(currentToken, tokens.getCurrentLineNumber());
+			
+		} else {
+			
+			String previousToken = removeQuotes(tokens.getCurrentToken());
+			currentToken = tokens.getNextToken();
+			
+			if(compare(currentToken,"=") == 0) {
+				
+				if(isScoped(previousToken)) {
+					// only add to local vars if it is locally scoped
+					if(compare(getScope(previousToken),"local") == 0) {
+						functions.lastElement().addLocalVar(previousToken, tokens.getCurrentLineNumber());
+					} 
+				} else {
+					if(!isLocalScoped(previousToken)) {
+						Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+previousToken+" is not scoped.","Scope");
+						currentFunction.addWarning(currentWarning);
+					}
+				}
+				
+			}
+		}
+		
+		return tokens.getCurrentToken();
+		
 	}
-
-	private boolean isEndComment(Tokens tokens) {
-		String currentToken = tokens.getCurrentToken();
-		String tail = tokens.lookAhead(3);
-		return compare(currentToken,"-") == 0 && compare(tail,"-->") == 0;
+	
+	private String parseCfscriptTag(Tokens tokens) {
+		
+		int parenCount = 0;
+		int currentLineNumber = tokens.getCurrentLineNumber();
+		Boolean isComment = false;
+		String currentToken = tokens.getNextToken();
+		Function currentFunction = functions.lastElement();
+		
+		// get to the end of the cfscript tag
+		while(!EOF(currentToken) && compare(currentToken,">") != 0) {
+			currentToken = tokens.getNextToken();
+		}
+		
+		currentToken = tokens.getNextToken();
+		
+		while(!EOF(currentToken) && !(compare(currentToken,"cfscript") == 0 && compare(tokens.getPreviousToken(),"/") == 0)) {
+		
+			if(compare(currentToken,"(") == 0)
+				parenCount++;
+				
+			if(compare(currentToken,")") == 0)
+				parenCount--;
+			
+			// handle comments
+			if(compare(currentToken,"/") == 0 && compare(tokens.lookAhead(1),"/") == 0) {
+				isComment = true;
+				currentLineNumber = tokens.getCurrentLineNumber();
+			}
+			if(tokens.getCurrentLineNumber() != currentLineNumber) {
+				isComment = false;
+			}	
+			
+			if(compare(currentToken,"=") == 0 && parenCount == 0 && !isComment) {
+				
+				String var = tokens.getToken(2);
+				String variable = tokens.getPreviousToken();
+				
+				if(compare(var,"var") == 0) {
+					functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
+				} else if (isScoped(variable) && compare(getScope(variable),"local") == 0) {
+					functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
+				} else if (!isScoped(variable) && !isLocalScoped(variable)) {
+					Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+variable+" is not scoped.","Scope");
+					currentFunction.addWarning(currentWarning);
+				}
+				
+			}
+			
+			currentToken = tokens.getNextToken();
+		
+		}
+		
+		return currentToken;
+		
 	}
-
-	private boolean isComment(Tokens tokens) {
-		String currentToken = tokens.getCurrentToken();
-		String tail = tokens.lookAhead(4);
-		return compare(currentToken,"<") == 0 && compare(tail,"!---") == 0;
-	}
-
+	
 	private String parseFunctionAttributes(Tokens tokens, int tagLineNumber) {
 		
 		Hashtable<String,String> attributes = parseAttributes(tokens);
@@ -202,6 +213,8 @@ public class DefaultTagComponentParser extends AbstractParser {
 				// get the value of the attribute
 				currentToken = tokens.getNextToken();
 			}
+			
+			// TODO: need to fix the issue with spaces inside the string.
 			
 			if(!EOF(currentToken) && compare(tokens.getPreviousToken(),"=") == 0) {
 				// the value two tokens ago is the name of the attribute
@@ -272,4 +285,21 @@ public class DefaultTagComponentParser extends AbstractParser {
 	private String[] splitVar(String variable) {
 		return variable.split("[\\.\\[]");
 	}
+
+	private boolean inComment(Tokens tokens) {
+		return commentCount > 0 || isComment(tokens);
+	}
+
+	private boolean isEndComment(Tokens tokens) {
+		String currentToken = tokens.getCurrentToken();
+		String tail = tokens.lookAhead(3);
+		return compare(currentToken,"-") == 0 && compare(tail,"-->") == 0;
+	}
+
+	private boolean isComment(Tokens tokens) {
+		String currentToken = tokens.getCurrentToken();
+		String tail = tokens.lookAhead(4);
+		return compare(currentToken,"<") == 0 && compare(tail,"!---") == 0;
+	}
+
 }

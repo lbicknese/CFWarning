@@ -8,14 +8,12 @@ public class Tokens {
 	private int currentFilePosition;
 	private int currentLineNumber;
 	private String fileText;
-	private Boolean isScript;
 	
 	public Tokens(String text) {
 		tokens = new Vector<StringBuilder>();
 		currentFilePosition = 0;
 		currentLineNumber = 1;
 		fileText = text;
-		isScript = false;
 	}
 	
 	public int getCurrentLineNumber() {
@@ -24,7 +22,7 @@ public class Tokens {
 	
 	public String getNextToken() {
 		
-		if (fileText.length() == currentFilePosition)
+		if (isEOF())
 			return null;
 		
 		return nextToken();
@@ -86,10 +84,9 @@ public class Tokens {
 	
 	public String nextToken() {
 		
-		// TODO: need to parse out comments blocks and strings as single tokens...
-		
 		tokens.add(new StringBuilder(""));
 		
+		// eat the white space
 		while(!isEOF() && isWhitespace(fileText.charAt(currentFilePosition))) {
 			if (isEndLine(fileText.charAt(currentFilePosition))) {
 				currentLineNumber++;
@@ -97,15 +94,21 @@ public class Tokens {
 			currentFilePosition++;
 		}
 		
-		while(!isEOF() && !isWhitespace(fileText.charAt(currentFilePosition))) {
+		while(!isEOF()) {
 			
+			Character c = fileText.charAt(currentFilePosition);
+			
+			// Stop creating token at white space
+			if(isWhitespace(c)) {
+				break;
+			}
 			// don't add token separator to current token
-			if (isTokenSeparator(fileText.charAt(currentFilePosition)) && getCurrentToken().length() > 0) {
+			else if (isTokenSeparator(c) && getCurrentToken().length() > 0) {
 				break;
 			}
 			
 			// append to the current token
-			appendToCurrentToken(fileText.charAt(currentFilePosition));
+			appendToCurrentToken(c);
 
 			currentFilePosition++;
 			
@@ -114,29 +117,17 @@ public class Tokens {
 				break;
 			}
 			
-			if (isTokenSeparatorIncluded(fileText.charAt(currentFilePosition-1)) && getCurrentToken().length() > 1) {
+			if (isTokenSeparatorIncluded(c) && getCurrentToken().length() > 1) {
 				break;
 			}
 			
 		}
-		
-		// toggle on and off script parsing
-		if (isScript(getCurrentToken()))
-			isScript = !isScript;
 		
 		if (currentFilePosition == fileText.length()) 
 			return null;
 		
 		return getCurrentToken();
 		
-	}
-	
-	private Boolean isScript(String token) {
-		return token.compareToIgnoreCase("component") == 0 || token.compareToIgnoreCase("cfscript") == 0;
-	}
-	
-	public Boolean getIsScript() {
-		return isScript;
 	}
 	
 	private void appendToCurrentToken(char charAt) {

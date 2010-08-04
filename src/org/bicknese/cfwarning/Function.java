@@ -45,7 +45,6 @@ public class Function implements IWorkbenchAdapter,IAdaptable {
 	}
 	
 	public Boolean isScoped(String varName) {
-		//TODO: this needs to be updated to check on complex objects
 		return localVars.containsKey(varName.toLowerCase());
 	}
 	
@@ -60,7 +59,6 @@ public class Function implements IWorkbenchAdapter,IAdaptable {
 
 	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
