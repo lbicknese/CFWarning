@@ -4,10 +4,26 @@ that said here is what this is supposed to be:
 
 CFWarning
 
-My goal with this plugin is to make a simple eclipse view that will report errors in CFML code. For
-starters will warn the user when they are editing a CFC if they have not scoped a variable. Right now
-it only does tag-based components, but it will eventually do script as well.
+My goal with this plugin is to make a simple eclipse view that will report errors in CFML code. Right
+now the plugin handles the following two items:
 
-Future items that I am thinking about inlcude query param warnings, unused local vars, etc.
+	1. It scans tag components for unscoped variables and displays warnings
+	2. It scans tag components for cfdump and cfabort tags and displays warnings
+	
+Some of the features I would really like add are:
 
-I'll probably add more here to tell people how to get the project setup.
+	1. Script component support for all the features that the tag component has
+	2. Double click on warning items takes you to the line in the file
+	3. Suggested resolutions
+	4. Query parameter checking
+	5. Unused local variables checking
+	
+There are probably more that I will think of, but that sounds good right now. One other item to note, is that
+this plugin is designed right now for CF9. I have made assumptions about the use of the local scope. It also
+assumes that the 'beans' scope is valid.
+
+How to setup the project in Eclipse PDE
+1. Checkout CFWarning from GitHub
+2. Setup included libraries to include the JRE System and Plug-in Dependency libraries if they are not
+
+I think this is it right now.
