@@ -76,13 +76,8 @@ public class DefaultTagComponentParser extends AbstractParser {
 					Hashtable <String,String> attributes = parseAttributes(tokens);
 					String name = tags.returnValue(tagName, attributes);
 					
-					if(compare(getScope(name),"local") != 0 && name.compareTo("") != 0) {
-						
-						if(!isLocalScoped(name)) {
-							Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+name+" is not scoped.","Scope");
-							currentFunction.addWarning(currentWarning);
-						}
-						
+					if(name.compareTo("") != 0) {
+						handleVariable(name,tokens);
 					}
 					
 				} else if (compare(currentToken,"cfdump") == 0 || compare(currentToken,"cfabort") == 0) {
@@ -112,17 +107,7 @@ public class DefaultTagComponentParser extends AbstractParser {
 			
 			if(compare(currentToken,"=") == 0) {
 				
-				if(isScoped(previousToken)) {
-					// only add to local vars if it is locally scoped
-					if(compare(getScope(previousToken),"local") == 0) {
-						functions.lastElement().addLocalVar(previousToken, tokens.getCurrentLineNumber());
-					} 
-				} else {
-					if(!isLocalScoped(previousToken)) {
-						Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+previousToken+" is not scoped.","Scope");
-						currentFunction.addWarning(currentWarning);
-					}
-				}
+				handleVariable(previousToken,tokens);
 				
 			}
 		}
@@ -170,11 +155,8 @@ public class DefaultTagComponentParser extends AbstractParser {
 				
 				if(compare(var,"var") == 0) {
 					functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
-				} else if (isScoped(variable) && compare(getScope(variable),"local") == 0) {
-					functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
-				} else if (!isScoped(variable) && !isLocalScoped(variable)) {
-					Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+variable+" is not scoped.","Scope");
-					currentFunction.addWarning(currentWarning);
+				} else {
+					handleVariable(variable,tokens);
 				}
 				
 			}
@@ -250,6 +232,24 @@ public class DefaultTagComponentParser extends AbstractParser {
 		}
 		
 		return value;
+	}
+	
+	private void handleVariable(String variable, Tokens tokens) {
+		
+		Function currentFunction = functions.lastElement();
+		
+		if(isScoped(variable)) {
+			if(compare(getScope(variable),"local") == 0) {
+				functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
+			} 
+		} else {
+			if(!isLocalScoped(variable)) {
+				Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+variable+" is not scoped.","Scope");
+				currentFunction.addWarning(currentWarning);
+			}
+		}
+		
+		return;
 	}
 
 	private Boolean isFunctionBeginTag(String token, String previousToken) {

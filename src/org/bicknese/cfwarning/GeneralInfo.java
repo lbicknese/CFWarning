@@ -40,7 +40,7 @@ public class GeneralInfo implements  IWorkbenchAdapter,IAdaptable {
 
 	@Override
 	public String getLabel(Object o) {
-		return "CFWarnging parsed "+numberOfFunctions+" functions and found "+numberOfWarnings+" warnings.";
+		return "CFWarning parsed "+numberOfFunctions+" functions and found "+numberOfWarnings+" warnings.";
 	}
 
 	@Override
