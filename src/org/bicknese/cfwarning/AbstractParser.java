@@ -33,9 +33,9 @@ public abstract class AbstractParser {
 		this.functions = functions;
 	}
 	
-	protected void addFunction(Hashtable<String,String> attributes,int lineNumber) {
+	protected void addFunction(Hashtable<String,String> attributes,int lineNumber,int offset) {
 		
-		functions.add(new Function(attributes.get("name"),lineNumber));
+		functions.add(new Function(attributes.get("name"),lineNumber,offset));
 		
 	}
 	

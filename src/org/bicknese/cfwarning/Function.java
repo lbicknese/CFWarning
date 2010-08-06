@@ -1,24 +1,29 @@
 package org.bicknese.cfwarning;
 
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.views.properties.IPropertySource;
 
-public class Function implements IWorkbenchAdapter,IAdaptable {
+public class Function implements IWorkbenchAdapter,IAdaptable,IStructuredSelection, IClick {
 	
 	String functionName;
 	Hashtable<String,String> attributes;
 	int lineNumber;
+	int offset;
 	Vector<Warning> warnings;
 	Hashtable<String,Integer> localVars;
 	
-	public Function(String name,int lineNumber) {
+	public Function(String name,int lineNumber,int offset) {
 		functionName = name;
 		this.lineNumber = lineNumber;
+		this.offset = offset;
 		attributes = new Hashtable<String,String>();
 		warnings = new Vector<Warning>();
 		localVars = new Hashtable<String,Integer>();
@@ -58,18 +63,8 @@ public class Function implements IWorkbenchAdapter,IAdaptable {
 	}
 
 	@Override
-	public ImageDescriptor getImageDescriptor(Object object) {
-		return null;
-	}
-
-	@Override
 	public String getLabel(Object o) {
 		return lineNumber+": Function = "+functionName;
-	}
-
-	@Override
-	public Object getParent(Object o) {
-		return null;
 	}
 
 	@Override
@@ -78,6 +73,56 @@ public class Function implements IWorkbenchAdapter,IAdaptable {
 			return this;
 		if (adapter == IPropertySource.class)
 			return new FunctionProperties(this);
+		return null;
+	}
+
+	@Override
+	public int getOffset() {
+		return offset;
+	}
+
+	@Override
+	public int getRange() {
+		return 0;
+	}
+
+	@Override
+	public Object getFirstElement() {
+		return this;
+	}
+
+	@Override
+	public ImageDescriptor getImageDescriptor(Object object) {
+		return null;
+	}
+
+	@Override
+	public Object getParent(Object o) {
+		return null;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return false;
+	}
+
+	@Override
+	public Iterator<Object> iterator() {
+		return null;
+	}
+
+	@Override
+	public int size() {
+		return 0;
+	}
+
+	@Override
+	public Object[] toArray() {
+		return null;
+	}
+
+	@Override
+	public List<Object> toList() {
 		return null;
 	}
 

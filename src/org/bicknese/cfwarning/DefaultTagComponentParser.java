@@ -44,7 +44,7 @@ public class DefaultTagComponentParser extends AbstractParser {
 	
 	private String parseTagFunction(Tokens tokens) {
 		
-		String currentToken = parseFunctionAttributes(tokens,tokens.getCurrentLineNumber());
+		String currentToken = parseFunctionAttributes(tokens,tokens.getCurrentLineNumber(),tokens.getCurrentOffset());
 		
 		while(!EOF(currentToken) && !(compare(currentToken,"cffunction") == 0 && compare(tokens.getPreviousToken(),"/") == 0)) {
 		
@@ -81,7 +81,7 @@ public class DefaultTagComponentParser extends AbstractParser {
 					}
 					
 				} else if (compare(currentToken,"cfdump") == 0 || compare(currentToken,"cfabort") == 0) {
-					Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The tag "+currentToken+" has been found in the code.","Debug");
+					Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),tokens.getCurrentOffset(),"The tag "+currentToken+" has been found in the code.","Debug");
 					currentFunction.addWarning(currentWarning);
 				}
 			}
@@ -93,7 +93,6 @@ public class DefaultTagComponentParser extends AbstractParser {
 	private String parseCfsetTag(Tokens tokens) {
 		
 		String currentToken = tokens.getNextToken();
-		Function currentFunction = functions.lastElement();
 		
 		if(compare(currentToken,"var") == 0) {
 			
@@ -122,7 +121,6 @@ public class DefaultTagComponentParser extends AbstractParser {
 		int currentLineNumber = tokens.getCurrentLineNumber();
 		Boolean isComment = false;
 		String currentToken = tokens.getNextToken();
-		Function currentFunction = functions.lastElement();
 		
 		// get to the end of the cfscript tag
 		while(!EOF(currentToken) && compare(currentToken,">") != 0) {
@@ -169,10 +167,10 @@ public class DefaultTagComponentParser extends AbstractParser {
 		
 	}
 	
-	private String parseFunctionAttributes(Tokens tokens, int tagLineNumber) {
+	private String parseFunctionAttributes(Tokens tokens, int tagLineNumber, int offset) {
 		
 		Hashtable<String,String> attributes = parseAttributes(tokens);
-		addFunction(attributes,tagLineNumber);
+		addFunction(attributes,tagLineNumber,offset);
 		return tokens.getCurrentToken();
 		
 	}
@@ -244,7 +242,7 @@ public class DefaultTagComponentParser extends AbstractParser {
 			} 
 		} else {
 			if(!isLocalScoped(variable)) {
-				Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),"The variable "+variable+" is not scoped.","Scope");
+				Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),tokens.getCurrentOffset(),"The variable "+variable+" is not scoped.","Scope");
 				currentFunction.addWarning(currentWarning);
 			}
 		}

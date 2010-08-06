@@ -1,10 +1,15 @@
 package org.bicknese.cfwarning;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.model.*;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 public class CFWarning extends ViewPart implements IPartListener2, IPropertyListener {
 	
@@ -21,6 +26,27 @@ public class CFWarning extends ViewPart implements IPartListener2, IPropertyList
 		// these generic content and label providers can be used.
 		viewer.setContentProvider(new WorkbenchContentProvider());
 		viewer.setLabelProvider(new WorkbenchLabelProvider());
+		
+		viewer.addDoubleClickListener(new IDoubleClickListener() {
+			public void doubleClick(DoubleClickEvent event) {
+				
+				ISelection selection = event.getSelection();
+				if(selection != null && (selection instanceof IStructuredSelection)) {
+					IStructuredSelection ss = (IStructuredSelection)selection;
+					
+					if(ss.getFirstElement() instanceof IClick) {
+						IClick c = (IClick)ss.getFirstElement();
+						IEditorPart ip = getSite().getPage().getActiveEditor();
+						ip.setFocus();
+						if(ip instanceof ITextEditor) {
+							ITextEditor ie = (ITextEditor)ip;
+							ie.setHighlightRange(c.getOffset(), c.getRange(), true);
+						}
+					}
+					
+				}
+			}
+		});
 		
 		//add myself as a global listener
 		getSite().getPage().addPartListener(this);

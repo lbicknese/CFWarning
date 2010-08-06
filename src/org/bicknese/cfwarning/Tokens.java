@@ -8,6 +8,7 @@ public class Tokens {
 	private int currentFilePosition;
 	private int currentLineNumber;
 	private String fileText;
+	private int currentOffset = 0;
 	
 	public Tokens(String text) {
 		tokens = new Vector<StringBuilder>();
@@ -18,6 +19,10 @@ public class Tokens {
 	
 	public int getCurrentLineNumber() {
 		return currentLineNumber;
+	}
+	
+	public int getCurrentOffset() {
+		return currentOffset;
 	}
 	
 	public String getNextToken() {
@@ -90,6 +95,7 @@ public class Tokens {
 		while(!isEOF() && isWhitespace(fileText.charAt(currentFilePosition))) {
 			if (isEndLine(fileText.charAt(currentFilePosition))) {
 				currentLineNumber++;
+				currentOffset = currentFilePosition+1;
 			}
 			currentFilePosition++;
 		}

@@ -22,19 +22,16 @@ public class GeneralInfo implements  IWorkbenchAdapter,IAdaptable {
 	
 	@Override
 	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object[] getChildren(Object o) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public ImageDescriptor getImageDescriptor(Object object) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -45,7 +42,6 @@ public class GeneralInfo implements  IWorkbenchAdapter,IAdaptable {
 
 	@Override
 	public Object getParent(Object o) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
