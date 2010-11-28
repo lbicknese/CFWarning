@@ -46,6 +46,7 @@ public class TagLibrary extends AbstractUIPlugin {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(inputStream);
 			doc.getDocumentElement().normalize();
+			inputStream.close();
 			
 			return doc;
 			

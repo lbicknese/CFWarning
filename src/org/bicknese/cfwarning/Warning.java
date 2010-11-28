@@ -10,6 +10,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public class Warning implements IWorkbenchAdapter,IAdaptable,IStructuredSelection, IClick {
 	
+	// TODO: need to have a name or variable attribute. Also, may want to re-implement the warning into sub-classes.
 	int lineNumber;
 	String warningMessage;
 	String warningType;

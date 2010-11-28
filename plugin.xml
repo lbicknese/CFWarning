@@ -6,14 +6,14 @@
          point="org.eclipse.ui.views">
       <category
             name="%category.name"
-            id="com.bicknese.varscoper">
+            id="org.bicknese.cfwarning">
       </category>
       <view
             name="%view.name"
-            icon="icons/sample.gif"
-            category="com.bicknese.varscoper"
+            icon="$nl$/icons/sample.gif"
+            category="org.bicknese.cfwarning"
             class="org.bicknese.cfwarning.CFWarning"
-            id="com.bicknese.varscoper.VarScoper">
+            id="org.bicknese.cfwarning.CFWarning">
       </view>
    </extension>
    <extension

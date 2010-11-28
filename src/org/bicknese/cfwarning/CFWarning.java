@@ -100,7 +100,7 @@ public class CFWarning extends ViewPart implements IPartListener2, IPropertyList
 
 	@Override
 	public void partClosed(IWorkbenchPartReference partRef) {
-
+		partRef.removePropertyListener(this);
 	}
 
 	@Override

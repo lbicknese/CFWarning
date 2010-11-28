@@ -35,7 +35,7 @@ public class CFWarningModelFactory {
 			if(extension != null && extension.equals(CFWarningConstants.EXTENSION)) {
 				return getWarnings(file);
 			}
-					
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			//System.exit(1);

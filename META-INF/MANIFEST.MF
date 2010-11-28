@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.bicknese.cfwarning.Activator
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.resources,
@@ -25,3 +26,5 @@ Export-Package: org.bicknese.cfwarning;
    org.eclipse.jface.viewers,
    org.osgi.framework,
    org.eclipse.swt.widgets"
+Bundle-ClassPath: yamlbeans-1.04.jar,
+ .

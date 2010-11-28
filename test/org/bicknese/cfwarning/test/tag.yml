@@ -1,0 +1,30 @@
+file: tag.cfc
+functions:
+ - name: funcOne
+   line number: 3
+   warnings:
+    - name: myVar
+      line number: 5
+    - name: myVar2
+      line number: 6
+ - name: funcTwo
+   line number: 14
+   warnings:
+    - name: test
+      line number: 16
+ - name: funcThree
+   line number: 22
+   warnings:
+    - name: myVar2
+      line number: 27
+    - name: myVar2
+      line number: 32
+ - name: funcFour
+   line number: 38
+   warnings:
+    - name: myVar1
+      line number: 42
+    - name: myVar2
+      line number: 46
+    - name: myVar3
+      line number: 52
