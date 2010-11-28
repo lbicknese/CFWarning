@@ -9,14 +9,14 @@ now the plugin handles the following two items:
 
 	1. It scans tag components for unscoped variables and displays warnings
 	2. It scans tag components for cfdump and cfabort tags and displays warnings
+	3. Double click on warning items takes you to the line in the file
 	
 Some of the features I would really like add are:
 
 	1. Script component support for all the features that the tag component has
-	2. Double click on warning items takes you to the line in the file
-	3. Suggested resolutions
-	4. Query parameter checking
-	5. Unused local variables checking
+	2. Suggested resolutions
+	3. Query parameter checking
+	4. Unused local variables checking
 	
 There are probably more that I will think of, but that sounds good right now. One other item to note, is that
 this plugin is designed right now for CF9. I have made assumptions about the use of the local scope. It also
@@ -25,5 +25,6 @@ assumes that the 'beans' scope is valid.
 How to setup the project in Eclipse PDE
 1. Checkout CFWarning from GitHub
 2. Setup included libraries to include the JRE System and Plug-in Dependency libraries if they are not
+3. In order to run the tests you will need to put the yamlbeans jar in the root of the project and setup this depenendency.
 
 I think this is it right now.
