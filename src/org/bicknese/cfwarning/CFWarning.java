@@ -37,10 +37,14 @@ public class CFWarning extends ViewPart implements IPartListener2, IPropertyList
 					if(ss.getFirstElement() instanceof IClick) {
 						IClick c = (IClick)ss.getFirstElement();
 						IEditorPart ip = getSite().getPage().getActiveEditor();
-						ip.setFocus();
-						if(ip instanceof ITextEditor) {
-							ITextEditor ie = (ITextEditor)ip;
-							ie.setHighlightRange(c.getOffset(), c.getRange(), true);
+						try {
+							ip.setFocus();
+							if(ip instanceof ITextEditor) {
+								ITextEditor ie = (ITextEditor)ip;
+								ie.setHighlightRange(c.getOffset(), c.getRange(), true);
+							}
+						} catch(Exception e) {
+							e.printStackTrace();
 						}
 					}
 					
