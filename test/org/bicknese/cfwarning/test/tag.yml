@@ -28,3 +28,6 @@ functions:
       line number: 46
     - name: myVar3
       line number: 52
+ - name: AppendingOperators
+   line number: 57
+ 

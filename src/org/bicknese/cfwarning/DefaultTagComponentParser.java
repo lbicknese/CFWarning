@@ -148,8 +148,16 @@ public class DefaultTagComponentParser extends AbstractParser {
 			
 			if(compare(currentToken,"=") == 0 && parenCount == 0 && !isComment) {
 				
-				String var = tokens.getToken(2);
 				String variable = tokens.getPreviousToken();
+				int varLocation = 2; //the var will be two tokens back, unless i change it below
+				
+				if(isAppendingOperator(variable)) {
+					varLocation = 3; //if there is an appending operator then the var will be three tokens back
+					variable = tokens.getToken(2); //if there is an appending operator the variable will be two tokens back
+				}
+				
+				String var = tokens.getToken(varLocation);
+				
 				
 				if(compare(var,"var") == 0) {
 					functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
@@ -167,6 +175,10 @@ public class DefaultTagComponentParser extends AbstractParser {
 		
 	}
 	
+	private boolean isAppendingOperator(String variable) {
+		return compare(variable,"+") == 0 || compare(variable,"-") == 0 || compare(variable,"&") == 0;
+	}
+
 	private String parseFunctionAttributes(Tokens tokens, int tagLineNumber, int offset) {
 		
 		Hashtable<String,String> attributes = parseAttributes(tokens);

@@ -53,5 +53,13 @@
 		
 		
 	</cffunction>
+	
+	<cffunction name="AppendingOperators">
+		<cfset var i += 2 />
+		
+		<cfscript>
+			i += 1;
+		</cfscript>
+	</cffunction>
 
 </cfcomponent>
