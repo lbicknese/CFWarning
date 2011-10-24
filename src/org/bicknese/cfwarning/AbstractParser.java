@@ -38,7 +38,67 @@ public abstract class AbstractParser {
 		functions.add(new Function(attributes.get("name"),lineNumber,offset));
 		
 	}
+
+	protected void handleVariable(String variable, Tokens tokens) {
+		
+		Function currentFunction = functions.lastElement();
+		
+		if(isScoped(variable)) {
+			if(compare(getScope(variable),"local") == 0) {
+				functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
+			} 
+		} else {
+			if(!isLocalScoped(variable)) {
+				Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),tokens.getCurrentOffset(),"The variable "+variable+" is not scoped.","Scope");
+				currentFunction.addWarning(currentWarning);
+			}
+		}
+		
+		return;
+	}
+
+	protected Boolean isLocalScoped(String variable) {
+		Function currentFunction = functions.lastElement();
+		
+		if(currentFunction.isScoped(variable))
+			return true;
+		
+		if(currentFunction.isScoped("local."+variable))
+			return true;
+		
+		String[] parts = splitVar(variable);
+		String part = "";
+		for(int i = 0; i < parts.length; i++) {
+			
+			if(i==0)
+				part = parts[i];
+			else
+				part += "."+parts[i];
+			
+			
+			if(currentFunction.isScoped(parts[i]))
+				return true;
+			if(currentFunction.isScoped("local."+parts[i]))
+				return true;
+		}
+		
+		return false;
+	}
 	
+	protected Boolean isScoped(String variable) {
+		String[] parts = splitVar(variable);
+		return scopes.contains(parts[0].toLowerCase());
+	}
+	
+	protected String getScope(String variable) {
+		String[] parts = splitVar(variable);
+		return parts[0];
+	}
+
+	protected String[] splitVar(String variable) {
+		return variable.split("[\\.\\[]");
+	}
+
 	protected Boolean EOF(String currentToken) {
 		return currentToken == null;
 	}
@@ -58,6 +118,26 @@ public abstract class AbstractParser {
 	
 	protected int compare(String string1, String string2) {
 		return string1.compareToIgnoreCase(string2);
+	}
+	
+	protected int parseStructVariable(Tokens tokens, int start) {
+		
+		int back = start;
+		
+		// TODO: make sure i don't get an infinite loop...
+		if(compare(tokens.getToken(back),"]") == 0) {
+			while(compare(tokens.getToken(back),"[") != 0){
+				back++;
+			}
+		}
+		
+		back++;
+		
+		if(compare(tokens.getToken(back),"]") == 0 ) {
+			return parseStructVariable(tokens, back);
+		}
+		
+		return back;
 	}
 
 }

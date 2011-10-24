@@ -1,7 +1,5 @@
 package org.bicknese.cfwarning.test;
 
-import static org.junit.Assert.*;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,13 +7,15 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Vector;
 
+import junit.framework.TestCase;
+
 import org.bicknese.cfwarning.*;
 
 import com.esotericsoftware.yamlbeans.YamlReader;
 
-public class AbstractTest {
+public class AbstractTest extends TestCase {
 	
-    public void testParse(String definition) {
+    public void testParse(String definition, Boolean tag) {
 		try {
 			
 	        Map map = getExpectedOutput(definition);
@@ -25,7 +25,7 @@ public class AbstractTest {
 	        	expectedFunctions = (ArrayList)map.get("functions");
 	        }
 	        
-	        Vector<Function> actualFunctions = getActualOutput((String) map.get("file"));
+	        Vector<Function> actualFunctions = getActualOutput((String) map.get("file"), tag);
 	        
 	        testFunctions(expectedFunctions,actualFunctions);
 	        
@@ -53,7 +53,7 @@ public class AbstractTest {
         
 	}
 	
-	private Vector<Function> getActualOutput(String f) {
+	private Vector<Function> getActualOutput(String f, Boolean tag) {
 		
 		try {
 			
@@ -62,14 +62,22 @@ public class AbstractTest {
 	        BufferedReader br = new BufferedReader(fr);
 	        String text = "";
 	        while(br.ready()) {
-	        	text += br.readLine()+"\n";
+	        	text += br.readLine()+"\r\n";
 	        }
 	        br.close();
 	        fr.close();
-
+	        
 	        Tokens tokens = new Tokens(text);
 	        Vector<Function> functions = new Vector<Function>();
-	        DefaultTagComponentParser parser = new DefaultTagComponentParser(functions);
+	        
+	        IComponentParser parser;
+	        
+	        if(tag) {
+	        	parser = new DefaultTagComponentParser(functions);
+			} else {
+				parser = new DefaultScriptComponentParser(functions);
+			}
+	        
 	        parser.parse(tokens);
 	        
 	        return functions;

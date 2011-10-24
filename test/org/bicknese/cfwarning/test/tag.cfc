@@ -50,8 +50,7 @@
 		<cfinvoke method="funcThree"
 			arg1=" and a = b"
 			returnvariable="myVar3">
-		
-		
+			
 	</cffunction>
 	
 	<cffunction name="AppendingOperators">

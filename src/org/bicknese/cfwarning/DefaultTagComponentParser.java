@@ -3,7 +3,7 @@ package org.bicknese.cfwarning;
 import java.util.Hashtable;
 import java.util.Vector;
 
-public class DefaultTagComponentParser extends AbstractParser {
+public class DefaultTagComponentParser extends AbstractParser implements IComponentParser {
 	
 	private TagLibrary tags = TagLibrary.getInstance();
 	private int commentCount = 0;
@@ -188,7 +188,7 @@ public class DefaultTagComponentParser extends AbstractParser {
 	}
 	
 	private Hashtable<String,String> parseAttributes(Tokens tokens) {
-		
+		//TODO: put a line number for each attribute
 		Hashtable<String,String> attributes = new Hashtable<String,String>();
 
 		String currentToken = tokens.getNextToken();
@@ -233,35 +233,19 @@ public class DefaultTagComponentParser extends AbstractParser {
 		Character c = currentToken.charAt(0);
 		
 		if(!EOF(currentToken) && (c == '\'' || c == '\"')) {
-			
-			while(!EOF(currentToken) && value.charAt(value.length()-1) != c) {
-				currentToken = tokens.getNextToken();
+			//System.out.println(currentToken);
+			currentToken = tokens.getNextToken();
+			while(!EOF(currentToken) && currentToken.charAt(0) != c) {
+				System.out.println("adding");
 				value += currentToken;
+				currentToken = tokens.getNextToken();
 			}
-			
+			value += currentToken;
 		}
 		
 		return value;
 	}
 	
-	private void handleVariable(String variable, Tokens tokens) {
-		
-		Function currentFunction = functions.lastElement();
-		
-		if(isScoped(variable)) {
-			if(compare(getScope(variable),"local") == 0) {
-				functions.lastElement().addLocalVar(variable, tokens.getCurrentLineNumber());
-			} 
-		} else {
-			if(!isLocalScoped(variable)) {
-				Warning currentWarning = new Warning(tokens.getCurrentLineNumber(),tokens.getCurrentOffset(),"The variable "+variable+" is not scoped.","Scope");
-				currentFunction.addWarning(currentWarning);
-			}
-		}
-		
-		return;
-	}
-
 	private Boolean isFunctionBeginTag(String token, String previousToken) {
 		
 		if (compare(previousToken,"/") == 0) {
@@ -276,48 +260,6 @@ public class DefaultTagComponentParser extends AbstractParser {
 		
 	}
 	
-	private Boolean isLocalScoped(String variable) {
-		Function currentFunction = functions.lastElement();
-		
-		if(currentFunction.isScoped(variable))
-			return true;
-		
-		if(currentFunction.isScoped("local."+variable))
-			return true;
-		
-		String[] parts = splitVar(variable);
-		String part = "";
-		for(int i = 0; i < parts.length; i++) {
-			
-			if(i==0)
-				part = parts[i];
-			else
-				part += "."+parts[i];
-			
-			
-			if(currentFunction.isScoped(parts[i]))
-				return true;
-			if(currentFunction.isScoped("local."+parts[i]))
-				return true;
-		}
-		
-		return false;
-	}
-	
-	private Boolean isScoped(String variable) {
-		String[] parts = splitVar(variable);
-		return scopes.contains(parts[0].toLowerCase());
-	}
-	
-	private String getScope(String variable) {
-		String[] parts = splitVar(variable);
-		return parts[0];
-	}
-	
-	private String[] splitVar(String variable) {
-		return variable.split("[\\.\\[]");
-	}
-
 	private boolean inComment(Tokens tokens) {
 		return commentCount > 0 || isComment(tokens);
 	}

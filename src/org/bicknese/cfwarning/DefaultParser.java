@@ -40,11 +40,11 @@ public class DefaultParser implements IFileParser {
 		
 		if(!EOF(currentToken)) {
 			if(currentToken.compareToIgnoreCase(ITokensConstants.BEGIN_COMPONENT_SCRIPT) == 0) {
-				// TODO: parse script component.
+				DefaultScriptComponentParser parser = new DefaultScriptComponentParser(functions);
+				currentToken = parser.parse(tokens);
 			} else if(currentToken.compareToIgnoreCase(ITokensConstants.BEGIN_COMPONENT_TAG) == 0) {
 				DefaultTagComponentParser parser = new DefaultTagComponentParser(functions);
 				currentToken = parser.parse(tokens);
-				
 			}
 		}
 		

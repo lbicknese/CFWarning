@@ -2,21 +2,21 @@ package org.bicknese.cfwarning.test;
 
 import org.junit.Test;
 
-public class TestDefaultTagComponentParser extends AbstractTest {
+public class TestDefaultScriptComponentParser extends AbstractTest {
 
 	@Test
 	public void testNormal() {
-		testParse("tag.yml", true);
+		testParse("script.yml", false);
 	}
 	
 	@Test
 	public void testEmptyFile() {
-		testParse("emptyTag.yml", true);
+		testParse("emptyScript.yml", false);
 	}
 	
 	@Test
 	public void testTagNoFunction() {
-		testParse("tagNoFunction.yml", true);
+		testParse("scriptNoFunction.yml", false);
 	}
 	
 }

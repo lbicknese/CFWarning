@@ -1,0 +1,16 @@
+file: script.cfc
+functions:
+ - name: func1
+   line number: 3
+   warnings:
+    - name: myVar1
+      line number: 5
+ - name: func2
+   line number: 14
+   warnings:
+    - name: i
+      line number: 15
+    - name: myVar3
+      line number: 16
+ - name: func3
+   line number: 22

@@ -1,11 +1,11 @@
 package org.bicknese.cfwarning.test;
 
+import junit.framework.TestCase;
+
 import org.bicknese.cfwarning.Tokens;
 import org.junit.*;
 
-import static org.junit.Assert.*;
-
-public class TestTokens {
+public class TestTokens extends TestCase {
 	
 	@Test
     public void testEmptyFile() {
@@ -13,5 +13,19 @@ public class TestTokens {
         assertEquals(tokens.getNextToken(),null);
         assertEquals(tokens.getCurrentLineNumber(),1);
     }
+	
+	@Test
+	public void testStructNotation() {
+		Tokens tokens = new Tokens("arg[\"value\"] = 1;");
+		assertEquals("arg", tokens.getNextToken());
+		assertEquals("[", tokens.getNextToken());
+		assertEquals("\"", tokens.getNextToken());
+		assertEquals("value", tokens.getNextToken());
+		assertEquals("\"", tokens.getNextToken());
+		assertEquals("]", tokens.getNextToken());
+		assertEquals("=", tokens.getNextToken());
+		assertEquals("1", tokens.getNextToken());
+		assertEquals(";", tokens.getNextToken());
+	}
 	
 }

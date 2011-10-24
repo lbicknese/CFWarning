@@ -42,10 +42,10 @@ public class Tokens {
 	}
 	
 	public String getToken(int location) {
-		
+		//System.out.println("info: "+tokens.size()+" -- "+location);
 		if (tokens.size() < location+1)
 			return null;
-			
+		//System.out.println(tokens.get(tokens.size()-location-1));	
 		return tokenize(tokens.get(tokens.size()-location-1));
 	}
 	
@@ -72,7 +72,7 @@ public class Tokens {
 	}
 	
 	private Boolean isTokenSeparator(Character c) {
-		return c == '=' || c == '/' || c == '<' || c == '>' || c == '-' || c == '+' || c == '*' || c == '&' || c == '(' || c == ')' || c == ';' || c == ':';
+		return c == '=' || c == '/' || c == '<' || c == '>' || c == '-' || c == '+' || c == '*' || c == '&' || c == '(' || c == ')' || c == ';' || c == ':' || c == '{' || c == '}' || c == ',' || c == '[' || c == ']' || c == '\"';
 	}
 	
 	private Boolean isTokenSeparatorIncluded(Character c) {
@@ -129,9 +129,9 @@ public class Tokens {
 			
 		}
 		
-		if (currentFilePosition == fileText.length()) 
+		if (currentFilePosition == fileText.length()+1) 
 			return null;
-		
+
 		return getCurrentToken();
 		
 	}
